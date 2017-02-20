@@ -29,8 +29,8 @@ public class Test {
 		//crunchifyClient.getCtoFResponse();
 		//crunchifyClient.getFtoCResponse();
 		
-		//test.testTransferInsert(86);
-		test.testGetTransfer(86);
+		test.testTransferInsert(86);
+		//test.testGetTransfer(86);
 	}
 	private void testGetTransfer(int id)
 		{
@@ -96,7 +96,7 @@ public class Test {
 			testTran.setStatus("booh");
 			testTran.setType("tipo a caso");
 			testTran.setUser_id(userid);
-			testTran.setUser_roleazzo("passenger");
+			testTran.setUser_role("passenger");
 			
 			ObjectMapper mapper = new ObjectMapper();
 			String jsonTran = mapper.writeValueAsString(testTran);
@@ -113,42 +113,6 @@ public class Test {
 			System.out.println(output);
 		}
  
-	private void getFtoCResponse() {
-		try {
- 
-			Client client = Client.create();
-			WebResource webResource2 = client.resource("http://localhost:8080/CrunchifyRESTJerseyExample/crunchify/ftocservice/90");
-			ClientResponse response2 = webResource2.accept("application/json").get(ClientResponse.class);
-			if (response2.getStatus() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : " + response2.getStatus());
-			}
- 
-			String output2 = response2.getEntity(String.class);
-			System.out.println("\n============getFtoCResponse============");
-			System.out.println(output2);
- 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
- 
-	private void getCtoFResponse() {
-		try {
- 
-			Client client = Client.create();
-			WebResource webResource = client.resource("http://localhost:8080/CrunchifyRESTJerseyExample/crunchify/ctofservice/40");
-			ClientResponse response = webResource.accept("application/xml").get(ClientResponse.class);
-			if (response.getStatus() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-			}
- 
-			String output = response.getEntity(String.class);
-			System.out.println("============getCtoFResponse============");
-			System.out.println(output);
- 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	
 
 }

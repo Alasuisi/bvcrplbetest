@@ -93,12 +93,12 @@ public class Transfer {
 		this.pool_id = pool_id;
 	}
 
-	public String getUser_roleazzo() {
+	public String getUser_role() {
 		return role; 
 		//return "{\"role\":\""+role+"\"}";
 	}
 
-	public void setUser_roleazzo(String portanna) throws JsonProcessingException {
+	public void setUser_role(String portanna) throws JsonProcessingException {
 		/*ObjectMapper mapper = new ObjectMapper();
 		String jsonInString = mapper.writeValueAsString(user_role);
 		System.out.println(jsonInString);
