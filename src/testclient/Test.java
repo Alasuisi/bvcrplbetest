@@ -29,8 +29,8 @@ public class Test {
 		//crunchifyClient.getCtoFResponse();
 		//crunchifyClient.getFtoCResponse();
 		
-		test.testTransferInsert(86);
-		//test.testGetTransfer(86);
+		//test.testTransferInsert(88);
+		test.testGetTransfer(88);
 	}
 	private void testGetTransfer(int id)
 		{
@@ -53,7 +53,7 @@ public class Test {
 			GeoApiContext context = new GeoApiContext().setApiKey("AIzaSyBA-NgbRwnecHN3cApbnZoaCZH0ld66fT4");
 			DirectionsResult results=null;
 			try {
-				results = DirectionsApi.getDirections(context, "roma", "ferentino").await();
+				results = DirectionsApi.getDirections(context, "via ariosto 25 roma", "viale manzoni roma").await();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -61,13 +61,14 @@ public class Test {
 			DirectionsRoute[] routes = results.routes;
 			EncodedPolyline lines=routes[0].overviewPolyline;
 			List<LatLng> path = lines.decodePath();
-			LinkedList<Point2D.Double> pathpp = new LinkedList<Point2D.Double>();
+			LinkedList<TimedPoint2D> pathpp = new LinkedList<TimedPoint2D>();
 			Iterator<LatLng> iter = path.iterator();
 			while(iter.hasNext())
 				{
 				 LatLng temp =iter.next();
-				 Point2D.Double toAdd = new Point2D.Double();
-				 toAdd.setLocation(temp.lat, temp.lng);
+				 Point2D.Double coord = new Point2D.Double(temp.lat, temp.lng);
+				 TimedPoint2D toAdd = new TimedPoint2D(coord,System.currentTimeMillis());
+				 //toAdd.setLocation(temp.lat, temp.lng);
 				 pathpp.add(toAdd);
 				 
 				}
