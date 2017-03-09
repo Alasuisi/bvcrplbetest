@@ -41,9 +41,27 @@ public class Transfer {
 	private String status;
 	private double price;
 	private LinkedList<TimedPoint2D> path; //jsonobject
+	private double det_range;
+	private String ride_details;
 
 	
 	public Transfer(){}
+
+	public double getDet_range() {
+		return det_range;
+	}
+
+	public void setDet_range(double det_range) {
+		this.det_range = det_range;
+	}
+
+	public String getRide_details() {
+		return ride_details;
+	}
+
+	public void setRide_details(String ride_details) {
+		this.ride_details = ride_details;
+	}
 
 	public int getTran_id() {
 		return tran_id;
@@ -98,12 +116,11 @@ public class Transfer {
 		//return "{\"role\":\""+role+"\"}";
 	}
 
-	public void setUser_role(String portanna) throws JsonProcessingException {
+	public void setUser_role(String user_role) throws JsonProcessingException {
 		/*ObjectMapper mapper = new ObjectMapper();
 		String jsonInString = mapper.writeValueAsString(user_role);
-		System.out.println(jsonInString);
 		this.role = jsonInString;*/
-		this.role=portanna;
+		this.role=user_role;
 	}
 
 	public String getDep_addr() {
@@ -122,7 +139,7 @@ public class Transfer {
 		this.arr_addr = arr_addr;
 	}
 
-	public Point2D getDep_gps() {
+	public Point2D.Double getDep_gps() {
 		return dep_gps;
 	}
 
@@ -130,7 +147,7 @@ public class Transfer {
 		this.dep_gps = dep_gps;
 	}
 
-	public Point2D getArr_gps() {
+	public Point2D.Double getArr_gps() {
 		return arr_gps;
 	}
 
