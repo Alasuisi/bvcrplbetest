@@ -39,9 +39,28 @@ public class Test {
 		 
 		Test test = new Test();
 		
-		test.testTransferInsert(100);
-		test.testGetTransfer(100);
+		//test.testTransferInsert(101);
+		//test.testGetTransfer(101);
+		test.testCSA();
 	}
+	
+	private void testCSA()
+	{
+	System.out.println("\n============ testing CSA============");
+	Client client = Client.create();
+	WebResource resource = client.resource("http://localhost:8080/bvcrplbe/OfferRide/CSA");
+	//WebResource resource = client.resource("http://82.223.67.189:8080/carpoolingbe/OfferRide/"+userid);
+	ClientResponse response = resource.accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);
+	if (response.getStatus() != 200) {
+		throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+	}
+
+	String output = response.getEntity(String.class);
+	System.out.println(output);
+	}
+	
+	
+	
 	private void testGetTransfer(int id)
 		{
 		System.out.println("\n============ testing getTransfers============");
@@ -61,8 +80,8 @@ public class Test {
 	
 	private  void testTransferInsert(int userid) throws JsonProcessingException
 		{
-			String from = "via ostiense roma";
-			String to ="piazza re di roma roma";
+			String from = "via umbertide 37 roma";
+			String to ="via ariosto 25 roma";
 			Calendar myCal = Calendar.getInstance();
 			myCal.set(Calendar.YEAR, 2017);
 			myCal.set(Calendar.MONTH, 12);
@@ -140,7 +159,7 @@ public class Test {
 			testTran.setStatus("booh");
 			testTran.setType("tipo a caso");
 			testTran.setUser_id(userid);
-			testTran.setUser_role("driver");
+			testTran.setUser_role("passenger");
 			testTran.setDet_range(300);
 			testTran.setRide_details("fiat panda del 75 turbo nafta");
 			System.out.println(testTran);
