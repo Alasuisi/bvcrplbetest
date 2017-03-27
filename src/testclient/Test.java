@@ -39,7 +39,7 @@ public class Test {
 		 
 		Test test = new Test();
 		
-		//test.testTransferInsert(101);
+		//test.testTransferInsert(100);
 		//test.testGetTransfer(101);
 		test.testCSA();
 	}
@@ -66,8 +66,8 @@ public class Test {
 		System.out.println("\n============ testing getTransfers============");
 		Client client = Client.create();
 		String userid=new Integer(id).toString();
-		//WebResource resource = client.resource("http://localhost:8080/bvcrplbe/OfferRide/"+userid);
-		WebResource resource = client.resource("http://82.223.67.189:8080/carpoolingbe/OfferRide/"+userid);
+		WebResource resource = client.resource("http://localhost:8080/bvcrplbe/OfferRide/"+userid);
+		//WebResource resource = client.resource("http://82.223.67.189:8080/bvcrplbe/OfferRide/"+userid);
 		ClientResponse response = resource.accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);
 		if (response.getStatus() != 200) {
 			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
@@ -80,19 +80,20 @@ public class Test {
 	
 	private  void testTransferInsert(int userid) throws JsonProcessingException
 		{
-			String from = "via umbertide 37 roma";
-			String to ="via ariosto 25 roma";
+			String from = "via tuscolana 357 roma";
+			String to ="via appia nuova 167 roma";
 			Calendar myCal = Calendar.getInstance();
 			myCal.set(Calendar.YEAR, 2017);
-			myCal.set(Calendar.MONTH, 12);
+			myCal.set(Calendar.MONTH, 11);
 			myCal.set(Calendar.DAY_OF_MONTH, 25);
 			myCal.set(Calendar.HOUR_OF_DAY,12);
-			myCal.set(Calendar.MINUTE,30);
+			myCal.set(Calendar.MINUTE,1);
 			Date theDate = myCal.getTime();
 			GeoApiContext context = new GeoApiContext().setApiKey("AIzaSyBA-NgbRwnecHN3cApbnZoaCZH0ld66fT4");
 			DirectionsResult results=null;
 			try {
 				results = DirectionsApi.getDirections(context, from, to).await();
+				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -118,19 +119,26 @@ public class Test {
 				}*/
 			long counterduration=0;
 			LinkedList<TimedPoint2D> pathpp = new LinkedList<TimedPoint2D>();
+			double firstLat = steps[0].startLocation.lat;
+			double firstlon = steps[0].startLocation.lng;
+			long touchTime = theDate.getTime();
+			TimedPoint2D source = new TimedPoint2D(firstLat,firstlon,touchTime);
+			pathpp.add(source);
 			for(int i=0;i<steps.length;i++)
 				{
 				//System.out.println(steps[i].toString());
-				 double lat = steps[i].startLocation.lat;
-				 double lng = steps[i].startLocation.lng;
+				 double lat = steps[i].endLocation.lat;
+				 double lng = steps[i].endLocation.lng;
 				 Duration duration =steps[i].duration;
 				 counterduration=counterduration+duration.inSeconds;
-				 long touchTime = theDate.getTime()+(duration.inSeconds*1000);
+				 //long touchTime = theDate.getTime()+(duration.inSeconds*1000);
+				 touchTime = touchTime+(duration.inSeconds*1000);
 				 TimedPoint2D toAdd = new TimedPoint2D(lat,lng,touchTime);
 				 pathpp.add(toAdd);
 				 //System.out.println(toAdd.toString());
 				 //System.out.println("durata somma degli step "+counterduration);
 				}
+
 			
 			
 			Transfer testTran = new Transfer();
@@ -206,8 +214,8 @@ public class Test {
 			
 			
 			Client client = Client.create();
-			//WebResource resource = client.resource("http://localhost:8080/bvcrplbe/OfferRide");
-			WebResource resource = client.resource("http://82.223.67.189:8080/carpoolingbe/OfferRide");
+			WebResource resource = client.resource("http://localhost:8080/bvcrplbe/OfferRide");
+			//WebResource resource = client.resource("http://82.223.67.189:8080/carpoolingbe/OfferRide");
 			ClientResponse response = resource.type(MediaType.APPLICATION_JSON).post(ClientResponse.class,jsonTran);
 			if (response.getStatus() != 201) {
 				throw new RuntimeException("Failed : HTTP error code : "
