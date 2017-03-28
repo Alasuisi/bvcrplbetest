@@ -2,13 +2,20 @@ package testclient;
 
 import java.awt.geom.Point2D;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.ws.rs.core.MediaType;
+
+import org.gavaghan.geodesy.Ellipsoid;
+import org.gavaghan.geodesy.GeodeticCalculator;
+import org.gavaghan.geodesy.GlobalPosition;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -30,6 +37,8 @@ import com.google.maps.model.TravelMode;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.ClientResponse.Status;
+
+
 import com.sun.jersey.api.client.WebResource;
 
 
@@ -39,7 +48,7 @@ public class Test {
 		 
 		Test test = new Test();
 		
-		//test.testTransferInsert(100);
+		//test.testTransferInsert(103);
 		//test.testGetTransfer(101);
 		test.testCSA();
 	}
@@ -80,14 +89,14 @@ public class Test {
 	
 	private  void testTransferInsert(int userid) throws JsonProcessingException
 		{
-			String from = "via tuscolana 357 roma";
-			String to ="via appia nuova 167 roma";
+			String from = "via appia nuova 119 roma";
+			String to ="via merulana 121 roma";
 			Calendar myCal = Calendar.getInstance();
 			myCal.set(Calendar.YEAR, 2017);
 			myCal.set(Calendar.MONTH, 11);
 			myCal.set(Calendar.DAY_OF_MONTH, 25);
 			myCal.set(Calendar.HOUR_OF_DAY,12);
-			myCal.set(Calendar.MINUTE,1);
+			myCal.set(Calendar.MINUTE,58);
 			Date theDate = myCal.getTime();
 			GeoApiContext context = new GeoApiContext().setApiKey("AIzaSyBA-NgbRwnecHN3cApbnZoaCZH0ld66fT4");
 			DirectionsResult results=null;
@@ -100,7 +109,6 @@ public class Test {
 			}
 			DirectionsRoute[] routes = results.routes;
 			DirectionsLeg lines=routes[0].legs[0];
-			System.out.println("durata della tratta (leg)"+lines.duration.inSeconds);
 			DirectionsStep[] steps = lines.steps;
 			
 			
@@ -117,10 +125,12 @@ public class Test {
 				 pathpp.add(toAdd);
 				 
 				}*/
-			long counterduration=0;
+			
+			/*long counterduration=0;
 			LinkedList<TimedPoint2D> pathpp = new LinkedList<TimedPoint2D>();
 			double firstLat = steps[0].startLocation.lat;
 			double firstlon = steps[0].startLocation.lng;
+			System.out.println(firstLat+","+firstlon);
 			long touchTime = theDate.getTime();
 			TimedPoint2D source = new TimedPoint2D(firstLat,firstlon,touchTime);
 			pathpp.add(source);
@@ -129,6 +139,7 @@ public class Test {
 				//System.out.println(steps[i].toString());
 				 double lat = steps[i].endLocation.lat;
 				 double lng = steps[i].endLocation.lng;
+				 System.out.println(lat+","+lng);
 				 Duration duration =steps[i].duration;
 				 counterduration=counterduration+duration.inSeconds;
 				 //long touchTime = theDate.getTime()+(duration.inSeconds*1000);
@@ -137,7 +148,55 @@ public class Test {
 				 pathpp.add(toAdd);
 				 //System.out.println(toAdd.toString());
 				 //System.out.println("durata somma degli step "+counterduration);
+				}*/
+			LinkedList<TimedPoint2D> pathpp = new LinkedList<TimedPoint2D>();
+			EncodedPolyline poli =routes[0].overviewPolyline;
+			List<LatLng> poliList = poli.decodePath();
+			Iterator<LatLng> polIter = poliList.iterator();
+			NumberFormat nf = NumberFormat.getNumberInstance(Locale.UK);
+			nf.setMaximumFractionDigits(5);    
+			nf.setMinimumFractionDigits(5);
+			nf.setGroupingUsed(false);
+			LatLng previous = polIter.next();
+			TimedPoint2D firstPoint= new TimedPoint2D();
+			firstPoint.setLatitude(new Double(nf.format(previous.lat)));
+			firstPoint.setLongitude(new Double(nf.format(previous.lng)));
+			firstPoint.setTouchTime(theDate.getTime());
+			pathpp.add(firstPoint);
+			long ttime=theDate.getTime();
+			double tdistance=0;
+			
+			while(polIter.hasNext())
+				{
+				LatLng actual = polIter.next();
+				double distance = evaluateDistance(previous,actual);
+				tdistance=tdistance+distance;
+				long time = ((lines.duration.inSeconds*1000)/(lines.distance.inMeters))*Math.round(distance);
+				//System.out.println(nf.format(previous.lat)+","+nf.format(previous.lng)+" --> "+nf.format(actual.lat)+","+nf.format(actual.lng)+" ttime: "+time);
+				ttime=ttime+time;
+				TimedPoint2D toAdd= new TimedPoint2D(new Double(nf.format(actual.lat)),new Double(nf.format(actual.lng)),ttime);
+				pathpp.add(toAdd);
+				previous=actual;
 				}
+			Iterator<TimedPoint2D> pathIter= pathpp.iterator();
+			
+			while(pathIter.hasNext())
+				{
+				System.out.println(pathIter.next());
+				}
+			System.out.println(System.lineSeparator()+"durata della tratta (leg) "+lines.duration.inSeconds*1000);
+			System.out.println("Lunghezza della tratta "+lines.distance.inMeters);
+			System.out.println("Distanza calcolata da me "+Math.round(tdistance));
+			System.out.println("Printing path, total time:"+(ttime-theDate.getTime()));
+			System.out.println(System.lineSeparator()+"Path polyline"+System.lineSeparator());
+			Iterator<LatLng> polIter2 = poliList.iterator();
+			while(polIter2.hasNext())
+				{
+				System.out.println(polIter2.next());
+				}
+			
+			System.out.println("start point "+pathpp.getFirst()+" della leg"+steps[0].startLocation);
+			System.out.println("end point "+pathpp.getLast()+" della leg"+steps[steps.length-1].endLocation);
 
 			
 			
@@ -145,14 +204,14 @@ public class Test {
 			testTran.setAnimal(true);
 			testTran.setArr_addr(to);
 			Point2D.Double arrpoint = new Point2D.Double();
-			arrpoint.setLocation(steps[steps.length-1].endLocation.lat, steps[steps.length-1].endLocation.lng);
+			arrpoint.setLocation(pathpp.getLast().getLatitude(), pathpp.getLast().getLongitude());
 			//arrpoint.setLocation(path.get(path.size()-1).lat,path.get(path.size()-1).lng);
 			testTran.setArr_gps(arrpoint);
 			testTran.setAva_seats(4);
 			testTran.setClass_id(6);
 			testTran.setDep_addr(from);
 			Point2D.Double deppoint = new Point2D.Double();
-			deppoint.setLocation(steps[0].startLocation.lat, steps[0].startLocation.lng);
+			deppoint.setLocation(pathpp.getFirst().getLatitude(),pathpp.getFirst().getLongitude());
 			testTran.setDep_gps(deppoint);
 			testTran.setDep_time(theDate.getTime());
 			testTran.setHandicap(true);
@@ -167,50 +226,13 @@ public class Test {
 			testTran.setStatus("booh");
 			testTran.setType("tipo a caso");
 			testTran.setUser_id(userid);
-			testTran.setUser_role("passenger");
+			testTran.setUser_role("driver");
 			testTran.setDet_range(300);
 			testTran.setRide_details("fiat panda del 75 turbo nafta");
-			System.out.println(testTran);
-			/*
-			Iterator<TimedPoint2D> iter = testTran.getPath().iterator();
-			while(iter.hasNext())
-				{
-				TimedPoint2D temp=iter.next();
-				System.out.println(temp.toString()+" "+temp.getLatitude()+" "+temp.getLongitude());
-
-				}*/
+			System.out.println(System.lineSeparator()+testTran);
 			
 			ObjectMapper mapper = new ObjectMapper();
-			
-			
-			/*String listapunti = mapper.writeValueAsString(testTran.getPath());
-			System.out.println("json lista punti "+listapunti);
-
-			CollectionType typeReference =TypeFactory.defaultInstance().constructCollectionType(LinkedList.class, TimedPoint2D.class);
-				try {
-					LinkedList<TimedPoint2D> resultDto = mapper.readValue(listapunti, typeReference);
-					Iterator<TimedPoint2D> iter2 = resultDto.iterator();
-					while(iter2.hasNext())
-						{
-						System.out.println("DIO MALEFICO "+iter2.next().toString());
-						}
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}*/
-			
-			
-			//mapper.configure(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS, true);
 			String jsonTran = mapper.writeValueAsString(testTran);
-			/*System.out.println("Transfer in json "+jsonTran);
-			try {
-				Transfer testDeddio = mapper.configure(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS, true).readValue(jsonTran, Transfer.class);
-				
-				System.out.println("PORTANNA LA MADONNA CAGNA "+testDeddio);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}*/
 			
 			
 			Client client = Client.create();
@@ -225,6 +247,39 @@ public class Test {
 			String output = response.getEntity(String.class);
 			System.out.println("output "+output);
 		}
+	
+	
+	private long travelTime(double distance)
+	{
+	 double meanSpeed = 1;
+	 double timeSeconds = distance/meanSpeed;
+	 double millitime =timeSeconds*1000;
+	 if(millitime<0) System.err.println("che e'successo!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!?"+distance);
+	 return Math.round(millitime);
+	}
+	
+	private double evaluateDistance(LatLng previous,LatLng actual)
+	{
+	/*double dlon = pPoint.getLongitude()-dPoint.getLongitude();
+	double dlat = pPoint.getLatitude()-dPoint.getLatitude();
+	double a = Math.pow((Math.sin(dlat/2)),2) + Math.cos(dPoint.getLatitude());
+	
+			dlon = lon2 - lon1 
+			dlat = lat2 - lat1 
+			a = (sin(dlat/2))^2 + cos(lat1) * cos(lat2) * (sin(dlon/2))^2 
+			c = 2 * atan2( sqrt(a), sqrt(1-a) ) 
+			d = R * c (where R is the radius of the Earth)*/
+	GeodeticCalculator geoCalc = new GeodeticCalculator();
+
+	Ellipsoid reference = Ellipsoid.WGS84;  
+
+	GlobalPosition pointA = new GlobalPosition(previous.lat, previous.lng, 0.0); // Point A
+
+	GlobalPosition userPos = new GlobalPosition(actual.lat, actual.lng, 0.0); // Point B
+
+	double distance = geoCalc.calculateGeodeticCurve(reference, userPos, pointA).getEllipsoidalDistance(); // Distance between Point A and Point B
+	return distance;
+	}
  
 	
 
