@@ -50,7 +50,8 @@ public class Test {
 		
 		//test.testTransferInsert(90);
 		//test.testGetTransfer(101);
-		test.testCSAnew(100,118);
+		//test.testCSAnew(100,118);
+		test.testCSA();
 		//test.testPool();
 	}
 	private void testPool()
@@ -128,14 +129,14 @@ public class Test {
 	
 	private  void testTransferInsert(int userid) throws JsonProcessingException
 		{
-			String from = "largo colli albani roma";
-			String to ="via merulana roma";
+			String from = "via deruta roma";
+			String to ="via ariosto 25 roma";
 			Calendar myCal = Calendar.getInstance();
 			myCal.set(Calendar.YEAR, 2017);
 			myCal.set(Calendar.MONTH, 11);
 			myCal.set(Calendar.DAY_OF_MONTH, 25);
 			myCal.set(Calendar.HOUR_OF_DAY,12);
-			myCal.set(Calendar.MINUTE,17);
+			myCal.set(Calendar.MINUTE,27);
 			Date theDate = myCal.getTime();
 			GeoApiContext context = new GeoApiContext().setApiKey("AIzaSyBA-NgbRwnecHN3cApbnZoaCZH0ld66fT4");
 			DirectionsResult results=null;
