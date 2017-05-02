@@ -48,10 +48,49 @@ public class Test {
 		 
 		Test test = new Test();
 		
-		//test.testTransferInsert(103);
+		//test.testTransferInsert(90);
 		//test.testGetTransfer(101);
-		test.testCSA();
+		test.testCSAnew(100,118);
+		//test.testPool();
 	}
+	private void testPool()
+		{
+		Client client = Client.create();
+		WebResource resource = client.resource("http://localhost:8080/bvcrplbe/OfferRide/pool/"+3);
+		ClientResponse response = resource.accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);
+		if (response.getStatus() != 200) {
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+		}
+		String output = response.getEntity(String.class);
+		System.out.println(output);
+		}
+	
+	private void testCSAnew(int userid,int transferID)
+		{
+		 Client client = Client.create();
+		 String address = "http://localhost:8080/bvcrplbe/SearchRide/myrequest/"+userid+"/"+transferID;
+		 WebResource resource = client.resource(address);
+		 System.out.println(address);
+		 ClientResponse response = resource.accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);
+		 if(response.getStatus()!= 200)
+		 	{
+			 throw new RuntimeException("DIOCANE Failed : HTTP error code : " + response.getStatus());
+		 	}
+		 client.destroy();
+		 String transferString = response.getEntity(String.class);
+		 System.out.println(transferString);
+		 Client client2 = Client.create();
+		 WebResource searchResource = client2.resource("http://localhost:8080/bvcrplbe/SearchRide/search");
+		 ClientResponse response2 = searchResource.accept(MediaType.TEXT_PLAIN).post(ClientResponse.class,transferString);
+		 if(response2.getStatus()!=200)
+		 	{
+			 //System.out.println(response2.getEntity(String.class));
+			 throw new RuntimeException("MADONNA LADRA Failed : HTTP error code : " + response2.getStatus());
+		 	}else
+		 		{
+		 		 System.out.println(response2.getEntity(String.class));
+		 		}
+		}
 	
 	private void testCSA()
 	{
@@ -89,14 +128,14 @@ public class Test {
 	
 	private  void testTransferInsert(int userid) throws JsonProcessingException
 		{
-			String from = "via appia nuova 119 roma";
-			String to ="via merulana 121 roma";
+			String from = "largo colli albani roma";
+			String to ="via merulana roma";
 			Calendar myCal = Calendar.getInstance();
 			myCal.set(Calendar.YEAR, 2017);
 			myCal.set(Calendar.MONTH, 11);
 			myCal.set(Calendar.DAY_OF_MONTH, 25);
 			myCal.set(Calendar.HOUR_OF_DAY,12);
-			myCal.set(Calendar.MINUTE,58);
+			myCal.set(Calendar.MINUTE,17);
 			Date theDate = myCal.getTime();
 			GeoApiContext context = new GeoApiContext().setApiKey("AIzaSyBA-NgbRwnecHN3cApbnZoaCZH0ld66fT4");
 			DirectionsResult results=null;
