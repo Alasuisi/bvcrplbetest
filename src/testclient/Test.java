@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import javax.ws.rs.core.MediaType;
 
@@ -51,9 +52,52 @@ public class Test {
 		//test.testTransferInsert(90);
 		//test.testGetTransfer(101);
 		//test.testCSAnew(100,118);
-		test.testCSA();
+		//test.testCSA();
 		//test.testPool();
+		//test.testGetSolutions(100, 118);
+		//test.testUUID();
+		test.populate_pool();
 	}
+	
+	private void testUUID()
+		{
+		for(int i=0;i<=10;i++)
+			{
+				UUID prova =UUID.randomUUID();
+				System.out.println(prova);
+			}
+		}
+	private void populate_pool()
+	{
+	 Client client = Client.create();
+	 String address= "http://localhost:8080/bvcrplbe/debugging/resetpool";
+	 WebResource resource = client.resource(address);
+	 ClientResponse response = resource.accept(MediaType.TEXT_PLAIN).get(ClientResponse.class);
+	 if(response.getStatus()!=200)
+	 	{
+		 throw new RuntimeException("Failed : HTTP error code : " + response.getStatus()+System.lineSeparator()+response.getEntity(String.class));
+	 	}else
+	 		{
+	 		String output = response.getEntity(String.class);
+	 		System.out.println("SUCCESS");
+			System.out.println(output);
+	 		}
+	}
+	
+	private void testGetSolutions(int userid, int tranid)
+		{
+		Client client = Client.create();
+		String address = "http://localhost:8080/bvcrplbe/SearchRide/"+userid+"/"+tranid;
+		 WebResource resource = client.resource(address);
+		 ClientResponse response = resource.accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);
+		 if(response.getStatus()!=200){
+				throw new RuntimeException("Failed : HTTP error code : " + response.getStatus()+response.getEntity(String.class));
+			}else
+				{
+				String output = response.getEntity(String.class);
+				System.out.println(output);
+				}
+		}
 	private void testPool()
 		{
 		Client client = Client.create();
@@ -75,18 +119,18 @@ public class Test {
 		 ClientResponse response = resource.accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);
 		 if(response.getStatus()!= 200)
 		 	{
-			 throw new RuntimeException("DIOCANE Failed : HTTP error code : " + response.getStatus());
+			 throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
 		 	}
 		 client.destroy();
 		 String transferString = response.getEntity(String.class);
 		 System.out.println(transferString);
 		 Client client2 = Client.create();
-		 WebResource searchResource = client2.resource("http://localhost:8080/bvcrplbe/SearchRide/search");
-		 ClientResponse response2 = searchResource.accept(MediaType.TEXT_PLAIN).post(ClientResponse.class,transferString);
+		 WebResource searchResource = client2.resource("http://localhost:8080/bvcrplbe/SearchRide");
+		 ClientResponse response2 = searchResource.type(MediaType.APPLICATION_JSON).post(ClientResponse.class,transferString);
 		 if(response2.getStatus()!=200)
 		 	{
 			 //System.out.println(response2.getEntity(String.class));
-			 throw new RuntimeException("MADONNA LADRA Failed : HTTP error code : " + response2.getStatus());
+			 throw new RuntimeException("Failed : HTTP error code : " + response2.getStatus());
 		 	}else
 		 		{
 		 		 System.out.println(response2.getEntity(String.class));
