@@ -56,7 +56,8 @@ public class Test {
 		//test.testPool();
 		//test.testGetSolutions(100, 118);
 		//test.testUUID();
-		test.populate_pool();
+		//test.populate_pool();
+		test.testBookRide(100, 118, 2, "http://tuamadre.com");
 	}
 	
 	private void testUUID()
@@ -67,6 +68,24 @@ public class Test {
 				System.out.println(prova);
 			}
 		}
+	
+	private  void testBookRide(int userid, int tranid,int solid,String callBack)
+		{
+		 Client client = Client.create();
+		 String address="http://localhost:8080/bvcrplbe/BookRide/"+userid+"/"+tranid+"/"+solid;
+		 WebResource resource = client.resource(address);
+		 ClientResponse response = resource.type(MediaType.TEXT_PLAIN).post(ClientResponse.class,callBack);
+		 if(response.getStatus()!=200)
+		 	{
+			 //System.out.println(response2.getEntity(String.class));
+			 throw new RuntimeException("Failed : HTTP error code : " + response.getStatus()+System.lineSeparator()+response.getEntity(String.class));
+		 	}else
+		 		{
+		 		 System.out.println(response.getEntity(String.class));
+		 		}		 
+		
+		}
+	
 	private void populate_pool()
 	{
 	 Client client = Client.create();
@@ -101,7 +120,7 @@ public class Test {
 	private void testPool()
 		{
 		Client client = Client.create();
-		WebResource resource = client.resource("http://localhost:8080/bvcrplbe/OfferRide/pool/"+3);
+		WebResource resource = client.resource("http://localhost:8080/bvcrplbe/OfferRide/pool/"+101+"/"+123);
 		ClientResponse response = resource.accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);
 		if (response.getStatus() != 200) {
 			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
