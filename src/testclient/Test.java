@@ -49,7 +49,7 @@ public class Test {
 		 
 		Test test = new Test();
 		
-		test.testTransferInsert(90);
+		//test.testTransferInsert(90);
 		//test.testGetTransfer(101);
 		//test.testCSAnew(100,118);
 		//test.testCSA();
@@ -57,7 +57,7 @@ public class Test {
 		//test.testGetSolutions(100, 118);
 		//test.testUUID();
 		//test.populate_pool();
-		//test.testBookRide(100, 118, 2, "http://tuamadre.com");
+		test.testBookRide(100, 118, 2, "http://tuamadre.com");
 	}
 	
 	private void testUUID()
@@ -74,7 +74,7 @@ public class Test {
 		 Client client = Client.create();
 		 String address="http://localhost:8080/bvcrplbe/BookRide/"+userid+"/"+tranid+"/"+solid;
 		 WebResource resource = client.resource(address);
-		 ClientResponse response = resource.type(MediaType.TEXT_PLAIN).post(ClientResponse.class,callBack);
+		 ClientResponse response = resource.type(MediaType.TEXT_PLAIN).get(ClientResponse.class);
 		 if(response.getStatus()!=200)
 		 	{
 			 //System.out.println(response2.getEntity(String.class));
