@@ -49,7 +49,7 @@ public class Test {
 		 
 		Test test = new Test();
 		
-		//test.testTransferInsert(90);
+		test.testTransferInsert(90);
 		//test.testGetTransfer(101);
 		//test.testCSAnew(100,118);
 		//test.testCSA();
@@ -57,7 +57,7 @@ public class Test {
 		//test.testGetSolutions(100, 118);
 		//test.testUUID();
 		//test.populate_pool();
-		test.testBookRide(100, 118, 2, "http://tuamadre.com");
+		//test.testBookRide(100, 118, 2, "http://tuamadre.com");
 	}
 	
 	private void testUUID()
@@ -192,10 +192,10 @@ public class Test {
 	
 	private  void testTransferInsert(int userid) throws JsonProcessingException
 		{
-			String from = "via deruta roma";
-			String to ="via ariosto 25 roma";
+			String from = "via palmiro togliatti roma";
+			String to ="largo preneste roma";
 			Calendar myCal = Calendar.getInstance();
-			myCal.set(Calendar.YEAR, 2017);
+			myCal.set(Calendar.YEAR, 2018);
 			myCal.set(Calendar.MONTH, 11);
 			myCal.set(Calendar.DAY_OF_MONTH, 25);
 			myCal.set(Calendar.HOUR_OF_DAY,12);
@@ -332,6 +332,7 @@ public class Test {
 			testTran.setUser_role("driver");
 			testTran.setDet_range(300);
 			testTran.setRide_details("fiat panda del 75 turbo nafta");
+			testTran.setCallback_uri("http\\prova.com");
 			System.out.println(System.lineSeparator()+testTran);
 			
 			ObjectMapper mapper = new ObjectMapper();
