@@ -51,13 +51,14 @@ public class Test {
 		
 		//test.testTransferInsert(90);
 		//test.testGetTransfer(101);
-		//test.testCSAnew(100,118);
+		test.testCSAnew(100,118,Long.MAX_VALUE,20);
 		//test.testCSA();
 		//test.testPool();
 		//test.testGetSolutions(100, 118);
 		//test.testUUID();
 		//test.populate_pool();
-		test.testBookRide(100, 118, 2, "http://tuamadre.com");
+		//test.testBookRide(100, 118, 2, "http://tuamadre.com");
+		//test.testDeleteRide(777, 666);
 	}
 	
 	private void testUUID()
@@ -67,6 +68,29 @@ public class Test {
 				UUID prova =UUID.randomUUID();
 				System.out.println(prova);
 			}
+		}
+	
+	private void testDeleteRide(int userid,int tranid)
+		{
+		
+		/*Client client = Client.create();
+		String address = "http://localhost:8080/testCallback/callback/driver/delete";
+		WebResource resource = client.resource(address);
+		ClientResponse response = resource.type(MediaType.TEXT_PLAIN).post(ClientResponse.class, "Portanna");
+		if(response.getStatus()!=200)
+			{
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus()+System.lineSeparator()+response.getEntity(String.class));
+			}else System.out.println("SUCCESS: "+response.getEntity(String.class));*/
+		
+		Client client = Client.create();
+		String address = "http://localhost:8080/bvcrplbe/OfferRide/"+userid+"/"+tranid;
+		WebResource resource = client.resource(address);
+		ClientResponse response = resource.delete(ClientResponse.class);
+		if(response.getStatus()!=200)
+			{
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus()+System.lineSeparator()+response.getEntity(String.class));
+			}else System.out.println("SUCCESS: "+response.getEntity(String.class));
+		
 		}
 	
 	private  void testBookRide(int userid, int tranid,int solid,String callBack)
@@ -129,7 +153,7 @@ public class Test {
 		System.out.println(output);
 		}
 	
-	private void testCSAnew(int userid,int transferID)
+	private void testCSAnew(int userid,int transferID,long timeFrame,int limit) 
 		{
 		 Client client = Client.create();
 		 String address = "http://localhost:8080/bvcrplbe/SearchRide/myrequest/"+userid+"/"+transferID;
@@ -144,7 +168,7 @@ public class Test {
 		 String transferString = response.getEntity(String.class);
 		 System.out.println(transferString);
 		 Client client2 = Client.create();
-		 WebResource searchResource = client2.resource("http://localhost:8080/bvcrplbe/SearchRide");
+		 WebResource searchResource = client2.resource("http://localhost:8080/bvcrplbe/SearchRide/"+timeFrame+"/"+limit); //1800000
 		 ClientResponse response2 = searchResource.type(MediaType.APPLICATION_JSON).post(ClientResponse.class,transferString);
 		 if(response2.getStatus()!=200)
 		 	{
