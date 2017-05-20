@@ -51,14 +51,14 @@ public class Test {
 		
 		//test.testTransferInsert(90);
 		//test.testGetTransfer(101);
-		test.testCSAnew(100,118,Long.MAX_VALUE,20);
+		//test.testCSAnew(100,118,Long.MAX_VALUE,20);
 		//test.testCSA();
 		//test.testPool();
 		//test.testGetSolutions(100, 118);
 		//test.testUUID();
 		//test.populate_pool();
-		//test.testBookRide(100, 118, 2, "http://tuamadre.com");
-		//test.testDeleteRide(777, 666);
+		//test.testBookRide(100, 118, 6, "http://localhost:8080/testCallback/callback/driver/delete/");
+		test.testDeleteRide(90, 143);
 	}
 	
 	private void testUUID()
@@ -83,7 +83,7 @@ public class Test {
 			}else System.out.println("SUCCESS: "+response.getEntity(String.class));*/
 		
 		Client client = Client.create();
-		String address = "http://localhost:8080/bvcrplbe/OfferRide/"+userid+"/"+tranid;
+		String address = "http://localhost:8080/bvcrplbe/OfferRide/"+userid+"/"+tranid+"/debug";
 		WebResource resource = client.resource(address);
 		ClientResponse response = resource.delete(ClientResponse.class);
 		if(response.getStatus()!=200)
