@@ -49,16 +49,16 @@ public class Test {
 		 
 		Test test = new Test();
 		
-		//test.testTransferInsert(90);
+		//test.testTransferInsert(95);
 		//test.testGetTransfer(101);
-		//test.testCSAnew(100,118,Long.MAX_VALUE,20);
+		test.testCSAnew(100,118,Long.MAX_VALUE,20);
 		//test.testCSA();
 		//test.testPool();
 		//test.testGetSolutions(100, 118);
 		//test.testUUID();
 		//test.populate_pool();
 		//test.testBookRide(100, 118, 6, "http://localhost:8080/testCallback/callback/driver/delete/");
-		test.testDeleteRide(90, 143);
+		//test.testDeleteRide(90, 143);
 	}
 	
 	private void testUUID()
@@ -216,14 +216,14 @@ public class Test {
 	
 	private  void testTransferInsert(int userid) throws JsonProcessingException
 		{
-			String from = "via palmiro togliatti roma";
-			String to ="largo preneste roma";
+			String from = "via appia nuova 119 roma";
+			String to ="via merulana 121 roma";
 			Calendar myCal = Calendar.getInstance();
-			myCal.set(Calendar.YEAR, 2018);
+			myCal.set(Calendar.YEAR, 2017);
 			myCal.set(Calendar.MONTH, 11);
 			myCal.set(Calendar.DAY_OF_MONTH, 25);
 			myCal.set(Calendar.HOUR_OF_DAY,12);
-			myCal.set(Calendar.MINUTE,27);
+			myCal.set(Calendar.MINUTE,48);
 			Date theDate = myCal.getTime();
 			GeoApiContext context = new GeoApiContext().setApiKey("AIzaSyBA-NgbRwnecHN3cApbnZoaCZH0ld66fT4");
 			DirectionsResult results=null;
