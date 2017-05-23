@@ -51,7 +51,7 @@ public class Test {
 		
 		//test.testTransferInsert(95);
 		//test.testGetTransfer(101);
-		//test.testCSAnew(100,118,Long.MAX_VALUE,20);
+		test.testCSAnew(100,118,Long.MAX_VALUE,20);
 		//test.testCSA();
 		//test.testPool();
 		//test.testGetSolutions(100, 118);
@@ -59,7 +59,7 @@ public class Test {
 		//test.populate_pool();
 		//test.testBookRide(100, 118, 8, "http://localhost:8080/testCallback/callback/driver/delete/");
 		//test.testDeleteRide(90, 147);
-		test.testDeleteBookedReservation(100, 118);
+		//test.testDeleteBookedReservation(100, 118);
 	}
 	
 	private void testUUID()
