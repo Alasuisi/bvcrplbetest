@@ -51,7 +51,7 @@ public class Test {
 		
 		//test.testTransferInsert(95);
 		//test.testGetTransfer(101);
-		test.testCSAnew(100,118,Long.MAX_VALUE,20);
+		//test.testCSAnew(100,118,Long.MAX_VALUE,20);
 		//test.testCSA();
 		//test.testPool();
 		//test.testGetSolutions(100, 118);
@@ -60,6 +60,7 @@ public class Test {
 		//test.testBookRide(100, 118, 8, "http://localhost:8080/testCallback/callback/driver/delete/");
 		//test.testDeleteRide(90, 147);
 		//test.testDeleteBookedReservation(100, 118);
+		test.testgetuserprofile(101);
 	}
 	
 	private void testUUID()
@@ -70,7 +71,17 @@ public class Test {
 				System.out.println(prova);
 			}
 		}
-	
+	private void testgetuserprofile(int userid)
+		{
+		Client client = Client.create();
+		String address="http://localhost:8080/bvcrplbe/userprofile/"+userid;
+		WebResource resource= client.resource(address);
+		ClientResponse response = resource.get(ClientResponse.class);
+		if(response.getStatus()!=200)
+			{
+			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus()+System.lineSeparator()+response.getEntity(String.class));
+			}else System.out.println("SUCCESS: "+response.getEntity(String.class));
+		}
 	private void testDeleteBookedReservation(int userid, int tranid)
 		{
 		Client client = Client.create();
