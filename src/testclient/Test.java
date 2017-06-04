@@ -17,7 +17,6 @@ import javax.ws.rs.core.MediaType;
 import org.gavaghan.geodesy.Ellipsoid;
 import org.gavaghan.geodesy.GeodeticCalculator;
 import org.gavaghan.geodesy.GlobalPosition;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -36,22 +35,23 @@ import com.google.maps.model.EncodedPolyline;
 import com.google.maps.model.LatLng;
 import com.google.maps.model.TravelMode;
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.ClientResponse.Status;
-
-
+import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 
 
 
 public class Test {
-	public static void main(String[] args) throws JsonProcessingException {
+	public static void main(String[] args) throws ClientHandlerException, UniformInterfaceException, Exception {
 		 
 		Test test = new Test();
 		
 		//test.testTransferInsert(95);
 		//test.testGetTransfer(101);
 		//test.testCSAnew(100,118,Long.MAX_VALUE,20);
+		//test.testCSAnew(100,121,2300000,20);
 		//test.testCSA();
 		//test.testPool();
 		//test.testGetSolutions(100, 118);
@@ -60,7 +60,8 @@ public class Test {
 		//test.testBookRide(100, 118, 8, "http://localhost:8080/testCallback/callback/driver/delete/");
 		//test.testDeleteRide(90, 147);
 		//test.testDeleteBookedReservation(100, 118);
-		test.testgetuserprofile(101);
+		//test.testgetuserprofile(101);
+		test.getBookedSolutions(100);
 	}
 	
 	private void testUUID()
@@ -70,6 +71,25 @@ public class Test {
 				UUID prova =UUID.randomUUID();
 				System.out.println(prova);
 			}
+		}
+	private void getBookedSolutions(int userid) throws ClientHandlerException, UniformInterfaceException, Exception
+		{
+		Client client = Client.create();
+		 String address="http://localhost:8080/bvcrplbe/BookRide/"+userid;
+		 WebResource resource = client.resource(address);
+		 ClientResponse response = resource.type(MediaType.APPLICATION_JSON).get(ClientResponse.class);
+		 if(response.getStatus()!=200)
+		 	{
+			 throw new Exception("Failed : HTTP error code : " + response.getStatus()+System.lineSeparator()+response.getEntity(String.class));
+		 	}else
+		 		{
+		 		//ObjectMapper mapper = new ObjectMapper();
+		 		String output = response.getEntity(String.class);
+		 		System.out.println(output);
+		 		//LinkedList<McsaSolution> result = new LinkedList<McsaSolution>();
+		 		//result = mapper.readValue(output, new TypeReference<LinkedList<McsaSolution>>(){});
+		 		//return result;
+		 		}
 		}
 	private void testgetuserprofile(int userid)
 		{
@@ -85,7 +105,7 @@ public class Test {
 	private void testDeleteBookedReservation(int userid, int tranid)
 		{
 		Client client = Client.create();
-		String address="http://localhost:8080/bvcrplbe/BookRide/"+userid+"/"+tranid+"/debug";
+		String address="http://localhost:8080/bvcrplbe/BookRide/"+userid+"/"+tranid;
 		WebResource resource= client.resource(address);
 		ClientResponse response = resource.delete(ClientResponse.class);
 		if(response.getStatus()!=200)
